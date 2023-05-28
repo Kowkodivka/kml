@@ -12,5 +12,6 @@ sealed class Node {
 
     data class Add(val left: Node, val right: Node) : Node()
     data class Subtract(val left: Node, val right: Node) : Node()
+    data class Function(val name: String, val parameters: List<String>, val body: Node) : Node()
 }
 

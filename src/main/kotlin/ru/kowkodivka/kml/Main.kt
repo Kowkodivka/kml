@@ -1,6 +1,5 @@
-import ru.kowkodivka.kml.Evaluator
-import ru.kowkodivka.kml.Lexer
-import ru.kowkodivka.kml.Parser
+package ru.kowkodivka.kml
+
 import java.io.File
 
 fun main() {
