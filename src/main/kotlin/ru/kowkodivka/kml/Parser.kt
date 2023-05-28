@@ -1,5 +1,7 @@
 package ru.kowkodivka.kml
 
+import Lexer
+
 class Parser(private val lexer: Lexer) {
     fun parse(): Node {
         val token = lexer.nextToken() ?: throw IllegalArgumentException("Empty input")
@@ -18,6 +20,13 @@ class Parser(private val lexer: Lexer) {
                 val term = parseTerm(right)
                 val addNode = Node.Add(left, term)
                 parseExpressionRest(addNode)
+            }
+
+            Node.Token.Minus -> {
+                val right = lexer.nextToken() ?: throw IllegalArgumentException("Incomplete expression")
+                val term = parseTerm(right)
+                val subtractNode = Node.Subtract(left, term)
+                parseExpressionRest(subtractNode)
             }
 
             else -> left

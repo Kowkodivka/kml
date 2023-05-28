@@ -1,4 +1,4 @@
-package ru.kowkodivka.kml
+import ru.kowkodivka.kml.Node
 
 class Lexer(private val input: String) {
     private var position = 0
@@ -15,6 +15,7 @@ class Lexer(private val input: String) {
 
         return when (c) {
             '+' -> Node.Token.Plus
+            '-' -> Node.Token.Minus
             in '0'..'9' -> {
                 var num = c.toString()
 

@@ -1,5 +1,7 @@
 package ru.kowkodivka.kml
 
+import Lexer
+
 fun main() {
     while (true) {
         print("> ")
