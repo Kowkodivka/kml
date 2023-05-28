@@ -1,19 +1,26 @@
 package ru.kowkodivka.kml
 
-import Lexer
-
 fun main() {
+    val evaluator = Evaluator()
+
     while (true) {
         print("> ")
-        val input = readln()
+        val input = readlnOrNull()
+
+        if (input.isNullOrEmpty()) {
+            continue
+        }
 
         val lexer = Lexer(input)
-        val parser = Parser(lexer)
-        val evaluator = Evaluator()
+        val parser = Parser(lexer, evaluator)
 
-        val ast = parser.parse()
-        val result = evaluator.evaluate(ast)
+        try {
+            val ast = parser.parse()
+            val result = evaluator.evaluate(ast)
 
-        println("Result: $result")
+            println("Result: $result")
+        } catch (e: IllegalArgumentException) {
+            println("Error: ${e.message}")
+        }
     }
 }

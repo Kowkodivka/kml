@@ -1,41 +1,54 @@
 package ru.kowkodivka.kml
 
-import Lexer
+class Parser(private val lexer: Lexer, private val evaluator: Evaluator) {
+    private var currentToken: Node.Token? = null
 
-class Parser(private val lexer: Lexer) {
     fun parse(): Node {
-        val token = lexer.nextToken() ?: throw IllegalArgumentException("Empty input")
-        return parseExpression(token)
+        advance()
+        return parseExpression()
     }
 
-    private fun parseExpression(token: Node.Token): Node {
-        val left = parseTerm(token)
+    private fun advance() {
+        currentToken = lexer.nextToken()
+    }
+
+    private fun parseExpression(): Node {
+        val left = parseTerm()
         return parseExpressionRest(left)
     }
 
     private fun parseExpressionRest(left: Node): Node {
-        return when (lexer.nextToken()) {
+        return when (currentToken) {
             Node.Token.Plus -> {
-                val right = lexer.nextToken() ?: throw IllegalArgumentException("Incomplete expression")
-                val term = parseTerm(right)
+                advance()
+                val term = parseTerm()
                 val addNode = Node.Add(left, term)
                 parseExpressionRest(addNode)
-            }
-
-            Node.Token.Minus -> {
-                val right = lexer.nextToken() ?: throw IllegalArgumentException("Incomplete expression")
-                val term = parseTerm(right)
-                val subtractNode = Node.Subtract(left, term)
-                parseExpressionRest(subtractNode)
             }
 
             else -> left
         }
     }
 
-    private fun parseTerm(token: Node.Token): Node {
-        return when (token) {
-            is Node.Token.Number -> Node.Token.Number(token.value)
+    private fun parseTerm(): Node {
+        return when (val token = currentToken) {
+            is Node.Token.Number -> {
+                advance()
+                Node.Token.Number(token.value)
+            }
+
+            is Node.Token.Identifier -> {
+                advance()
+                if (currentToken == Node.Token.Assign) {
+                    advance()
+                    val expression = parseExpression()
+                    evaluator.setVariable(token.name, evaluator.evaluate(expression))
+                    expression
+                } else {
+                    Node.Token.Identifier(token.name)
+                }
+            }
+
             else -> throw IllegalArgumentException("Invalid token: $token")
         }
     }

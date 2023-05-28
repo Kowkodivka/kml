@@ -1,4 +1,4 @@
-import ru.kowkodivka.kml.Node
+package ru.kowkodivka.kml
 
 class Lexer(private val input: String) {
     private var position = 0
@@ -16,6 +16,8 @@ class Lexer(private val input: String) {
         return when (c) {
             '+' -> Node.Token.Plus
             '-' -> Node.Token.Minus
+            '=' -> Node.Token.Assign
+
             in '0'..'9' -> {
                 var num = c.toString()
 
@@ -27,7 +29,20 @@ class Lexer(private val input: String) {
                 Node.Token.Number(num.toInt())
             }
 
-            else -> throw IllegalArgumentException("Invalid character: $c")
+            else -> {
+                if (c.isLetter()) {
+                    var identifier = c.toString()
+
+                    while (position < input.length && (input[position].isLetterOrDigit() || input[position] == '_')) {
+                        identifier += input[position]
+                        position++
+                    }
+
+                    Node.Token.Identifier(identifier)
+                } else {
+                    throw IllegalArgumentException("Invalid character: $c")
+                }
+            }
         }
     }
 
