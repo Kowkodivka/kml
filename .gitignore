@@ -1,6 +1,7 @@
 ### Project ###
 code.kml
 
+.idea
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
