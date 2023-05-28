@@ -1,17 +1,19 @@
-package ru.kowkodivka.kml
+import ru.kowkodivka.kml.Evaluator
+import ru.kowkodivka.kml.Lexer
+import ru.kowkodivka.kml.Parser
+import java.io.File
 
 fun main() {
     val evaluator = Evaluator()
+    val file = File("code.kml")
 
-    while (true) {
-        print("> ")
-        val input = readlnOrNull()
+    if (!file.exists()) {
+        println("File 'code.kml' not found.")
+        return
+    }
 
-        if (input.isNullOrEmpty()) {
-            continue
-        }
-
-        val lexer = Lexer(input)
+    file.forEachLine { line ->
+        val lexer = Lexer(line)
         val parser = Parser(lexer, evaluator)
 
         try {
